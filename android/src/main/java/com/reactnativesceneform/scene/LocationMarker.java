@@ -2,25 +2,15 @@ package com.reactnativesceneform.scene;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.facebook.react.uimanager.ThemedReactContext;
+import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.reactnativesceneform.R;
 import com.reactnativesceneform.utils.ModelManager;
-import com.facebook.react.uimanager.ThemedReactContext;
-import com.google.ar.core.Anchor;
-import com.google.ar.sceneform.Node;
-import com.google.ar.sceneform.rendering.Renderable;
-import com.google.ar.sceneform.rendering.ViewRenderable;
-
-import org.w3c.dom.Text;
-
 import java.lang.ref.WeakReference;
-
 import uk.co.appoly.arcorelocation.LocationScene;
 
 public class LocationMarker {

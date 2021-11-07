@@ -2,24 +2,24 @@
   "name": "react-native-sceneform",
   "version": "0.1.0",
   "description": "Sceneform for React Native",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
+  "main": "lib\\commonjs\\index.js",
+  "module": "lib\\module\\index.js",
   "types": "lib/typescript/index.d.ts",
-  "react-native": "src/index",
+  "react-native": "src\\index.js",
   "source": "src/index",
   "files": [
     "src",
     "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
     "android",
     "ios",
     "cpp",
     "react-native-sceneform.podspec",
     "!lib/typescript/example",
     "!android/build",
-    "!ios/build",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__"
+    "!ios/build"
   ],
   "scripts": {
     "test": "jest",
@@ -63,7 +63,7 @@
     "prettier": "^2.0.5",
     "react": "16.13.1",
     "react-native": "0.63.4",
-    "react-native-builder-bob": "^0.18.0",
+    "react-native-builder-bob": "^0.18.2",
     "release-it": "^14.2.2",
     "typescript": "^4.1.3"
   },
@@ -136,12 +136,7 @@
     "targets": [
       "commonjs",
       "module",
-      [
-        "typescript",
-        {
-          "project": "tsconfig.build.json"
-        }
-      ]
+      "aar"
     ]
   }
 }

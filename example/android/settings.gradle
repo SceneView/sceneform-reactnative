@@ -4,7 +4,3 @@ include ':app'
 
 include ':reactnativesceneform'
 project(':reactnativesceneform').projectDir = new File(rootProject.projectDir, '../../android')
-//include ':arcorelocation'
-//project(':arcorelocation').projectDir = new File(rootProject.projectDir, '../../location')
-include ':arcore-location'
-project(':arcore-location').projectDir = new File(rootProject.projectDir, '../../location/arcore-location')

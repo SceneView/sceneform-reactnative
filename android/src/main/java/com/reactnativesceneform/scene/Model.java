@@ -1,23 +1,17 @@
 package com.reactnativesceneform.scene;
 
-import android.app.Activity;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import com.reactnativesceneform.R;
-import com.reactnativesceneform.utils.ModelManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.math.Vector3;
-import com.google.ar.sceneform.rendering.Color;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
-import com.google.ar.sceneform.ux.VideoNode;
+import com.reactnativesceneform.utils.ModelManager;
 import java.lang.ref.WeakReference;
 
 public class Model {
