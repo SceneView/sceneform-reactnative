@@ -40,4 +40,9 @@ public class SceneformViewManager extends SimpleViewManager<ARScene> {
     public void setLocationMarkers(ARScene view, ReadableArray data){
       view.setLocationMarkers(data);
     }
+
+    @ReactProp(name="displayPlanes")
+    public void displayPlanes(ARScene view, boolean visible){
+      view.setPlaneVisibility(visible);
+    }
 }

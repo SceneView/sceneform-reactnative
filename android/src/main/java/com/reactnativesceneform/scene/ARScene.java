@@ -270,9 +270,9 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
     }
     config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
     config.setCloudAnchorMode(Config.CloudAnchorMode.ENABLED);
-    if(viewMode != HostResolveMode.HOSTING) {
-      config.setPlaneFindingMode(Config.PlaneFindingMode.DISABLED);
-    }
+    //if(viewMode != HostResolveMode.HOSTING) {
+    //  config.setPlaneFindingMode(Config.PlaneFindingMode.DISABLED);
+    //}
     //setOcclusionEnabled(true);
   }
 
@@ -337,12 +337,19 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
   public void setCurrentMode(boolean host){
     if(host){
       viewMode = HostResolveMode.HOSTING;
+    }
+    else{
+      viewMode = HostResolveMode.RESOLVING;
+    }
+  }
+
+  public void setPlaneVisibility(boolean visible){
+    if(visible){
       if(arFragment != null && arFragment.getArSceneView().getSession() != null){
         arFragment.getArSceneView().getSession().getConfig().setPlaneFindingMode(Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL);
       }
     }
     else{
-      viewMode = HostResolveMode.RESOLVING;
       if(arFragment != null && arFragment.getArSceneView().getSession() != null){
         arFragment.getArSceneView().getSession().getConfig().setPlaneFindingMode(Config.PlaneFindingMode.DISABLED);
       }
