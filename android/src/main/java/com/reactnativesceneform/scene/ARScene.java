@@ -191,9 +191,9 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
       }
       //Log.d("LocationMarkers", "Created " + locationScene.mLocationMarkers.size() + " markers");
     }
-    if (locationScene != null) {
+    //if (locationScene != null) {
       locationScene.refreshAnchors();
-    }
+    //}
   }
 
   @RequiresApi(api = Build.VERSION_CODES.N)

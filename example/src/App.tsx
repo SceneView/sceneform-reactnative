@@ -15,6 +15,8 @@ export default class App extends Component {
           onTapPlane={(event) => {
             this.sfRef.addObject({name: "https://storage.googleapis.com/linkworld/modelos/banana/banana.glb", anchorId: event.planeId, isCloudAnchor: false});
           }}
+          discoverMode={false}
+          locationMarkers={[{title: "Galerías Pachuca", lat: 20.098424745431917, lng: -98.7687495166884, isAnchor: false}]}
           />
       </View>
     );
