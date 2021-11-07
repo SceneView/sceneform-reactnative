@@ -205,6 +205,8 @@ dependencies {
     }
 
     implementation project(':reactnativesceneform')
+    //implementation project(':arcorelocation')
+    implementation project(':arcore-location')
 }
 
 // Run this once to be able to run the application with BUCK

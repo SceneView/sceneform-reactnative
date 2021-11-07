@@ -1,25 +1,36 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import { SceneformView } from 'react-native-sceneform';
+import SceneformView from 'react-native-sceneform';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <SceneformViewManager color="#32a852" style={styles.box} />
-    </View>
-  );
+export default class App extends Component {
+
+  render(){
+    return (
+      <View style={styles.container}>
+        <SceneformView
+          ref={(c) => this.sfRef = c}
+          style={styles.box}
+          viewMode={true}
+          onTapPlane={(event) => {
+            this.sfRef.addObject({name: "https://storage.googleapis.com/linkworld/modelos/banana/banana.glb", anchorId: event.planeId, isCloudAnchor: false});
+          }}
+          />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
+    height: "100%",
     alignItems: 'center',
     justifyContent: 'center',
   },
   box: {
-    width: 60,
-    height: 60,
+    width: "100%",
+    height: "100%",
     marginVertical: 20,
   },
 });
