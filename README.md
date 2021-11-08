@@ -6,6 +6,8 @@
 - Feature quality indicator
 - Depth API
 - Location anchors
+- Video recording
+- Screenshots
 
 # react-native-sceneform
 
@@ -79,7 +81,7 @@ You can access the value via `event.quality`
 Host the anchor when the event returns at least 1.
 
 ## VideoRecording
-When `stopVideoRecording` is called, the video is copied into storage and its path is returned when the promise fulfills.
+After `stopVideoRecording` is called (`startVideoRecording` must be called first), the video is copied into storage and its path is returned when the promise fulfills.
 
 You can get the path via `response.path`
 
@@ -96,12 +98,12 @@ It must be an URL pointing to a glb asset.
 It can be a CloudAnchorId or a PlaneId (returned by onTapPlane)
 
 ##### isCloudAnchor
-`boolean`, is true then the `anchorId` value will be taken as a CloudAnchorId and the session will attempt to resolve it, triggering `onAnchorResolve` if succeed.
+`boolean`, if true then the `anchorId` value will be taken as a CloudAnchorId and the session will attempt to resolve it, triggering `onAnchorResolve` if succeed.
 
 Otherwise, if `false` , `anchorId` will be taken as `Plane` and the object will be attached to it.
 
 ## LocationMarker
-A location marker is a placed calculating its real world position related to the user location.
+A location marker is placed calculating its real world position related to the user location.
 
 There are two types of tags currently supported, showing a label or a simple one with an icon.
 
@@ -117,7 +119,7 @@ The location marker structure is:
 `Double`, the longitude value.
 
 ##### isAnchor
-`boolean`, if `false` the title is shown in the maker, if `true` then the icon marker is used,
+`boolean`, if `false` the title is shown in the marker, if `true` then the icon marker is used,
 
 ## CloudAnchorId
 A `String` value returned by the `onAnchorHost` event, you can use it to resolve the same anchor lately or share it with friends to get the same experience.
@@ -131,4 +133,3 @@ A `String` value returned by the `onAnchorHost` event, you can use it to resolve
 - Custom lights
 - Animation manipulation (currently animations are played automatically)
 - Depth toggling
-- Everything else in the ARCore :D
