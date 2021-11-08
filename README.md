@@ -11,19 +11,10 @@
 
 ![](https://raw.githubusercontent.com/kboy-silvergym/ARCore-Kotlin-Sampler/master/readmeImages/sceneform.jpg)
 
-![](https://img.shields.io/github/stars/pandao/editor.md.svg) ![](https://img.shields.io/github/forks/pandao/editor.md.svg) ![](https://img.shields.io/github/tag/pandao/editor.md.svg) ![](https://img.shields.io/github/release/pandao/editor.md.svg) ![](https://img.shields.io/github/issues/pandao/editor.md.svg) ![](https://img.shields.io/bower/v/editor.md.svg)
-
-
-**Table of Contents**
-
-[TOCM]
-
-[TOC]
-
-#Requirements
+# Requirements
 This package requires your app to target Android SDK 24 at least and react-native 0.66+
 
-#Installation
+# Installation
 
 Install from npm running `npm install --save react-native-sceneform`
 Then, add the following to your AndroidManifest.xml inside the Application node.
@@ -33,7 +24,7 @@ Then, add the following to your AndroidManifest.xml inside the Application node.
 
 If you are going to use Cloud Anchors, be sure to add your API Key to the AndroidManifest or to sign your application in the Google Cloud Platform console (keyless auth)
 
-#Props, Methods and Events
+# Props, Methods and Events
 The `SceneformView` component supports the following props:
 
 |  name | values  | default  | required  |
@@ -64,7 +55,7 @@ The following events are supported:
 | onAnchorHost  | Triggered when a cloud anchor has been hosted correctly  |  `CloudAnchor` |
 | onFeatureMapQualityChange  | Triggered when the feature map quality changes (HOSTING ONLY)  |  `FeatureMapQuality` |
 
-#Type definitions
+# Type definitions
 
 ## Plane
 A plane is any touchable surface discovered in the AR session.
@@ -98,13 +89,13 @@ When `takeScreenshot` is called, the session's current view is copied into a bit
 ## Model
 The `addObject` method is used to insert a renderable into scene, it supports a `Model` object described as follows:
 
-#####model
+##### model
 It must be an URL pointing to a glb asset.
 
-#####anchorId
+##### anchorId
 It can be a CloudAnchorId or a PlaneId (returned by onTapPlane)
 
-#####isCloudAnchor
+##### isCloudAnchor
 `boolean`, is true then the `anchorId` value will be taken as a CloudAnchorId and the session will attempt to resolve it, triggering `onAnchorResolve` if succeed.
 
 Otherwise, if `false` , `anchorId` will be taken as `Plane` and the object will be attached to it.
@@ -116,16 +107,16 @@ There are two types of tags currently supported, showing a label or a simple one
 
 The location marker structure is:
 
-#####title
+##### title
 `String` , it is the label to be shown by the marker.
 
-#####lat
+##### lat
 `Double`, the latitude value.
 
-#####lng
+##### lng
 `Double`, the longitude value.
 
-#####isAnchor
+##### isAnchor
 `boolean`, if `false` the title is shown in the maker, if `true` then the icon marker is used,
 
 ## CloudAnchorId
