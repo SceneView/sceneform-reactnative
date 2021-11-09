@@ -18,7 +18,7 @@ This package requires your app to target Android SDK 24 at least and react-nativ
 
 # Installation
 
-Install from npm running `npm install --save react-native-sceneform`
+Install from npm running `npm install --save @sceneview/react-native-sceneform`
 Then, add the following to your AndroidManifest.xml inside the Application node.
 ```xml
 <meta-data android:name="com.google.ar.core" android:value="optional" />
