@@ -1,5 +1,8 @@
 package com.reactnativesceneform.scene;
 
+import static com.reactnativesceneform.utils.HelperFuncions.checkIsSupportedDeviceOrFinish;
+import static com.reactnativesceneform.utils.HelperFuncions.takeScreenshot;
+import static com.reactnativesceneform.utils.HelperFuncions.saveBitmapToDisk;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -87,6 +90,24 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
     NONE,
     HOSTING,
     RESOLVING,
+  }
+
+  public void takeScreenshot(Promise promise) {
+    ArSceneView view = arFragment.getArSceneView();
+    final Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+      Bitmap.Config.ARGB_8888);
+    final HandlerThread handlerThread = new HandlerThread("PixelCopier");
+    handlerThread.start();
+    PixelCopy.request(view, bitmap, (copyResult) -> {
+      if (copyResult == PixelCopy.SUCCESS) {
+        try {
+          saveBitmapToDisk(context, bitmap, promise);
+        } catch (IOException e) {
+          promise.reject("Create screenshot error");
+        }
+      }
+      handlerThread.quitSafely();
+    }, new Handler(handlerThread.getLooper()));
   }
 
   public void resolveCloudAnchor(String anchorId){
@@ -191,9 +212,9 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
       }
       //Log.d("LocationMarkers", "Created " + locationScene.mLocationMarkers.size() + " markers");
     }
-    //if (locationScene != null) {
+    if (locationScene != null) {
       locationScene.refreshAnchors();
-    //}
+    }
   }
 
   @RequiresApi(api = Build.VERSION_CODES.N)
@@ -449,27 +470,6 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
  */
   }
 
-  @SuppressLint("SetTextI18n")
-  public void calcDistanceToObject() {
-    Frame frame = arFragment.getArSceneView().getArFrame();
-    assert frame != null;
-    Pose camera = frame.getCamera().getPose();
-    //Vector3 objectMatrix = anchorNodeDelete.getWorldPosition();
-    //Double distance = calculateDistance(objectMatrix, camera);
-  }
-
-  private Double calculateDistance(Vector3 objectPose0, Pose objectPose1) {
-    return calculateDistance(
-      objectPose0.x - objectPose1.tx(),
-      objectPose0.y - objectPose1.ty(),
-      objectPose0.z - objectPose1.tz()
-    );
-  }
-
-  private Double calculateDistance(Float x, Float y, Float z) {
-    return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
-  }
-
   @SuppressLint("ShowToast")
   public void deleteNodeObject() {
     /*
@@ -573,54 +573,4 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
     thread.start();
   }
 
-  public static boolean checkIsSupportedDeviceOrFinish(final Activity activity) {
-    String openGlVersionString =
-      ((ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE))
-        .getDeviceConfigurationInfo()
-        .getGlEsVersion();
-    if (Double.parseDouble(openGlVersionString) < 3.0) {
-      Log.e("ArCoreView", "ArCore requires OpenGL ES 3.0 later");
-      Toast.makeText(activity, "ArCore requires OpenGL ES 3.0 or later", Toast.LENGTH_LONG)
-        .show();
-      activity.finish();
-      return false;
-    }
-    return true;
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.N)
-  public void takeScreenshot(Promise promise) {
-    ArSceneView view = arFragment.getArSceneView();
-    final Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
-      Bitmap.Config.ARGB_8888);
-    final HandlerThread handlerThread = new HandlerThread("PixelCopier");
-    handlerThread.start();
-    PixelCopy.request(view, bitmap, (copyResult) -> {
-      if (copyResult == PixelCopy.SUCCESS) {
-        try {
-          saveBitmapToDisk(bitmap, promise);
-        } catch (IOException e) {
-          promise.reject("Create screenshot error");
-        }
-      }
-      handlerThread.quitSafely();
-    }, new Handler(handlerThread.getLooper()));
-  }
-
-  public void saveBitmapToDisk(Bitmap bitmap, Promise promise) throws IOException {
-    File imageScreen = new File(context.getDir("images", Context.MODE_PRIVATE).toString());
-    Calendar c = Calendar.getInstance();
-    @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("HH.mm.ss dd-MM-yyyy");
-    String formattedDate = df.format(c.getTime());
-
-    File mediaFile = new File(imageScreen, "AVRScreenshot" + formattedDate + ".jpeg");
-
-    FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fileOutputStream);
-    fileOutputStream.flush();
-    fileOutputStream.close();
-    WritableMap event = Arguments.createMap();
-    event.putString("path", mediaFile.getPath());
-    promise.resolve(event);
-  }
 }
