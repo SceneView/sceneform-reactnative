@@ -31,13 +31,6 @@ class AugmentedFacesView extends React.Component {
 
 AugmentedFacesView.propTypes = {
   ...View.propTypes,
-    viewMode:                       PropTypes.bool,
-   onAnchorCreate:                  PropTypes.func,
-   onAnchorResolve:                 PropTypes.func,
-   onSessionCreate:                 PropTypes.func,
-   displayPointCloud:               PropTypes.bool,
-   displayPlanes:                   PropTypes.bool
-
 };
 
 const NativeArView = requireNativeComponent('SceneformAugmentedFacesView', AugmentedFacesView, {

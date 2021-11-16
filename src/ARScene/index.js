@@ -12,10 +12,6 @@ class SceneformView extends React.Component {
     }
 
     onChange(event) {
-        if(event.nativeEvent.onAnchorCreate){
-            if (!this.props.onAnchorCreate) { return; }
-            this.props.onAnchorCreate({ onAnchorCreate: event.nativeEvent });
-        }
         if(event.nativeEvent.onAnchorResolve){
             if (!this.props.onAnchorResolve) { return; }
             this.props.onAnchorResolve({ onAnchorResolve: event.nativeEvent});
@@ -39,10 +35,6 @@ class SceneformView extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.onAnchorCreate) {
-            let sub = DeviceEventEmitter.addListener('onAnchorCreate',this.props.onAnchorCreate);
-            this.subscriptions.push(sub);
-        }
         if (this.props.onAnchorResolve) {
             let sub = DeviceEventEmitter.addListener('onAnchorResolve', this.props.onAnchorResolve);
             this.subscriptions.push(sub);
@@ -106,8 +98,8 @@ class SceneformView extends React.Component {
 
 SceneformView.propTypes = {
   ...View.propTypes,
-    viewMode:                       PropTypes.bool,
-   onAnchorCreate:                  PropTypes.func,
+    viewMode:                       PropTypes.oneOf(['host', 'resolve']),
+   onAnchorHost:                    PropTypes.func,
    onAnchorResolve:                 PropTypes.func,
    onSessionCreate:                 PropTypes.func,
    displayPointCloud:               PropTypes.bool,
