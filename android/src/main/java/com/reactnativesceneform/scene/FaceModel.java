@@ -21,6 +21,7 @@ public class FaceModel {
   private boolean ready = false;
   private Promise promise;
   private boolean error = false;
+  private boolean hasTexture = false;
 
   public FaceModel(AugmentedFacesScene parent){
     mParent = parent;
@@ -31,6 +32,7 @@ public class FaceModel {
   }
 
   public void loadTexture(String url){
+    hasTexture = true;
     loaders.add(Texture.builder()
       .setSource(mParent.context, Uri.parse(url))
       .setUsage(Texture.Usage.COLOR_MAP)
@@ -55,7 +57,7 @@ public class FaceModel {
   }
 
   public void onUpdate(){
-   if(faceModel != null && faceTexture != null && !ready && !error) {
+   if(faceModel != null && (faceTexture != null && hasTexture || !hasTexture && faceTexture == null) && !ready && !error) {
      ready = true;
      int index = mParent.mFaces.indexOf(this);
      promise.resolve(index);
