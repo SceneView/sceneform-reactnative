@@ -306,3 +306,7 @@ A `String` value returned by the `onAnchorHost` event, you can use it to resolve
 - Animation manipulation (currently animations are played automatically)
 
 - Depth toggling
+
+# Credits
+
+![ARCore-Location](https://github.com/appoly/ARCore-Location)
