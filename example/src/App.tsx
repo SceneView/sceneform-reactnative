@@ -1,23 +1,56 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, View } from 'react-native';
-import SceneformView from 'react-native-sceneform';
+import { StyleSheet, View, Button, FlatList, TouchableOpacity, Text } from 'react-native';
+import { SceneformView, AugmentedFacesView } from '../../src';
+
+const Faces = [
+  {title: "Points", model: 'models/face.glb', texture: 'textures/face.png'},
+  {title: "Fox", model: 'models/fox.glb', texture: 'textures/freckles.png'},
+]
 
 export default class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      face:   -1,
+      faces:  []
+    }
+  }
+
+  componentDidMount(){
+    Faces.forEach((face) => {
+      this.sfRef.addAugmentedFace({model: face.model, texture: face.texture})
+      .then((index) => {
+        const faces = [...this.state.faces, {title: face.title, id: index}];
+        this.setState({faces: faces});
+      })
+    })
+  }
 
   render(){
     return (
       <View style={styles.container}>
-        <SceneformView
+        <AugmentedFacesView
+          setAugmentedFace={this.state.face}
           ref={(c) => this.sfRef = c}
           style={styles.box}
-          viewMode={true}
-          onTapPlane={(event) => {
-            this.sfRef.addObject({name: "https://storage.googleapis.com/linkworld/modelos/banana/banana.glb", anchorId: event.planeId, isCloudAnchor: false});
-          }}
-          discoverMode={false}
-          locationMarkers={[{title: "Galerías Pachuca", lat: 20.098424745431917, lng: -98.7687495166884, isAnchor: false}]}
           />
+        <View style={{width: '100%', height: 100, position: 'absolute', bottom: 0, left: 0, alignItems: 'center', justifyContent: 'center'}}>
+          <FlatList
+            style={{width: '100%', height: 60}}
+            horizontal={true}
+            data={this.state.faces}
+            renderItem={({item}) => {
+              return(
+                <TouchableOpacity key={item.id} style={{width: 60, height: 60, padding: 5}} onPress={() => {this.setState({face: item.id})}}>
+                  <View style={{width: '100%', height: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{textAlign: 'center'}}>{item.title}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
       </View>
     );
   }
