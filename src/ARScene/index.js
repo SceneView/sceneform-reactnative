@@ -9,6 +9,10 @@ class SceneformView extends React.Component {
         this.NativeArView = undefined;
         this.onChange = this.onChange.bind(this);
         this.subscriptions = [];
+        this.state = {
+            recording: false
+        }
+        this.mounted = false;
     }
 
     onChange(event) {
@@ -35,6 +39,7 @@ class SceneformView extends React.Component {
     }
 
     componentDidMount() {
+        this.mounted = true;
         if (this.props.onAnchorResolve) {
             let sub = DeviceEventEmitter.addListener('onAnchorResolve', this.props.onAnchorResolve);
             this.subscriptions.push(sub);
@@ -60,6 +65,7 @@ class SceneformView extends React.Component {
     componentWillUnmount() {
         this.subscriptions.forEach(sub => sub.remove());
         this.subscriptions = [];
+        this.mounted = false;
     }
 
     /**
@@ -83,11 +89,25 @@ class SceneformView extends React.Component {
         NativeModules.SceneformModule.resolveCloudAnchor(findNodeHandle(this), anchorId);
     }
 
-    startVideoRecording = () => {
-        return NativeModules.SceneformModule.startVideoRecording(findNodeHandle(this));
+    startVideoRecording = async () => {
+        if(this.state.recording){
+            throw 'Video is already recording';
+        }
+        const recording = await NativeModules.SceneformModule.startVideoRecording(findNodeHandle(this));
+        if(recording){
+            this.setState({recording: true}, () => {
+                return true;
+            });
+        }
+        else{
+            return false;
+        }
     }
 
     stopVideoRecording = () => {
+        if(!this.state.recording){
+            throw 'Video is not recording';
+        }
         return NativeModules.SceneformModule.stopVideoRecording(findNodeHandle(this));
     }
 

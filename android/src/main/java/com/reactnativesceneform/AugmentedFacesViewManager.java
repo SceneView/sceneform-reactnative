@@ -24,6 +24,8 @@ public class AugmentedFacesViewManager extends SimpleViewManager<AugmentedFacesS
 
   @ReactProp(name = "setAugmentedFace")
   public void setAugmentedFace(AugmentedFacesScene view, int index){
-    view.setAugmentedFace(index);
+    if(index > -1) {
+      view.setAugmentedFace(index);
+    }
   }
 }

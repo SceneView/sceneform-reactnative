@@ -13,10 +13,13 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.google.ar.core.AugmentedFace;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.RenderableInstance;
@@ -26,8 +29,10 @@ import com.google.ar.sceneform.ux.AugmentedFaceNode;
 import com.reactnativesceneform.R;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -40,12 +45,9 @@ public class AugmentedFacesScene extends FrameLayout {
   private final Set<CompletableFuture<?>> loaders = new HashSet<>();
   private Texture faceTexture;
   private ModelRenderable faceModel;
-  private Texture foxTexture;
-  private ModelRenderable foxModel;
-
-  private int faceIndex = 0;
 
   private final HashMap<AugmentedFace, AugmentedFaceNode> facesNodes = new HashMap<>();
+  public final List<FaceModel> mFaces = new ArrayList<FaceModel>();
 
   public AugmentedFacesScene(ThemedReactContext context) {
     super(context);
@@ -61,25 +63,50 @@ public class AugmentedFacesScene extends FrameLayout {
     arFragment = (ArFrontFacingFragment) ((AppCompatActivity) context.getCurrentActivity()).getSupportFragmentManager().findFragmentById(R.id.augmentedFacesFragment);
     assert arFragment != null;
     arFragment.getArSceneView().setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST);
-
-    loadModels();
-    loadTextures();
-
     arFragment.setOnAugmentedFaceUpdateListener(this::onAugmentedFaceTrackingUpdate);
+    arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateListener);
+  }
+
+  private void onUpdateListener(FrameTime frameTime) {
+    for(FaceModel model : mFaces){
+      model.onUpdate();
+    }
   }
 
   public void setAugmentedFace(int index){
-    faceIndex = index;
+    FaceModel model = mFaces.get(index);
+    if(model != null){
+      faceModel = model.faceModel.makeCopy();
+      faceTexture = model.faceTexture;
+      clearScene();
+    }
+  }
 
+  public void addFace(String modelUrl, String textureUrl, Promise promise){
+    FaceModel model = new FaceModel(this);
+    if(!modelUrl.equals("")){
+      model.loadModel(modelUrl);
+    }
+    if(!textureUrl.equals("")){
+      model.loadTexture(textureUrl);
+    }
+    model.setPromise(promise);
+    mFaces.add(model);
+    //Log.d("FaceModel", "Index: " + (mFaces.indexOf(model)));
+  }
+
+  private void clearScene(){
     for(AugmentedFace augmentedFace : facesNodes.keySet()){
       AugmentedFaceNode existingFaceNode = facesNodes.get(augmentedFace);
-      arFragment.getArSceneView().getScene().removeChild(existingFaceNode);
+      if(existingFaceNode != null) {
+        arFragment.getArSceneView().getScene().removeChild(existingFaceNode);
+      }
       facesNodes.remove(augmentedFace);
     }
   }
 
   public void onAugmentedFaceTrackingUpdate(AugmentedFace augmentedFace) {
-    if (faceModel == null || faceTexture == null) {
+    if (faceModel == null) {
       return;
     }
 
@@ -92,24 +119,13 @@ public class AugmentedFacesScene extends FrameLayout {
       case TRACKING:
         if (existingFaceNode == null) {
           AugmentedFaceNode faceNode = new AugmentedFaceNode(augmentedFace);
-          ModelRenderable model;
-          Texture texture;
-          if(faceIndex == 0){
-            model = faceModel.makeCopy();
-            texture = faceTexture;
-          }
-          else{
-            model = foxModel.makeCopy();
-            texture = foxTexture;
-          }
-          RenderableInstance modelInstance = faceNode.setFaceRegionsRenderable(model);
+          RenderableInstance modelInstance = faceNode.setFaceRegionsRenderable(faceModel);
           modelInstance.setShadowCaster(false);
           modelInstance.setShadowReceiver(true);
-
-          faceNode.setFaceMeshTexture(texture);
-
+          if(faceTexture != null) {
+            faceNode.setFaceMeshTexture(faceTexture);
+          }
           arFragment.getArSceneView().getScene().addChild(faceNode);
-
           facesNodes.put(augmentedFace, faceNode);
         }
         break;
@@ -120,50 +136,6 @@ public class AugmentedFacesScene extends FrameLayout {
         facesNodes.remove(augmentedFace);
         break;
     }
-  }
-
-  private void loadModels() {
-    loaders.add(ModelRenderable.builder()
-      .setSource(context, Uri.parse("models/face.glb"))
-      .setIsFilamentGltf(true)
-      .build()
-      .thenAccept(model -> faceModel = model)
-      .exceptionally(throwable -> {
-        Toast.makeText(context, "Unable to load renderable", Toast.LENGTH_LONG).show();
-        return null;
-      }));
-
-    loaders.add(ModelRenderable.builder()
-      .setSource(context, Uri.parse("models/fox.glb"))
-      .setIsFilamentGltf(true)
-      .build()
-      .thenAccept(model -> foxModel = model)
-      .exceptionally(throwable -> {
-        Toast.makeText(context, "Unable to load renderable", Toast.LENGTH_LONG).show();
-        return null;
-      }));
-  }
-
-  private void loadTextures() {
-    loaders.add(Texture.builder()
-      .setSource(context, Uri.parse("textures/face.png"))
-      .setUsage(Texture.Usage.COLOR_MAP)
-      .build()
-      .thenAccept(texture -> faceTexture = texture)
-      .exceptionally(throwable -> {
-        Toast.makeText(context, "Unable to load texture", Toast.LENGTH_LONG).show();
-        return null;
-      }));
-
-    loaders.add(Texture.builder()
-      .setSource(context, Uri.parse("textures/feckles.png"))
-      .setUsage(Texture.Usage.COLOR_MAP)
-      .build()
-      .thenAccept(texture -> foxTexture = texture)
-      .exceptionally(throwable -> {
-        Toast.makeText(context, "Unable to load texture", Toast.LENGTH_LONG).show();
-        return null;
-      }));
   }
 
   public void takeScreenshot(Promise promise) {

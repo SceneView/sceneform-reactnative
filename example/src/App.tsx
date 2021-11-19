@@ -1,26 +1,30 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button, FlatList, TouchableOpacity, Text } from 'react-native';
 import { SceneformView, AugmentedFacesView } from '../../src';
+
+const Faces = [
+  {title: "Points", model: 'models/face.glb', texture: 'textures/face.png'},
+  {title: "Fox", model: 'models/fox.glb', texture: 'textures/freckles.png'},
+]
 
 export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      face: 0
+      face:   -1,
+      faces:  []
     }
-    this.toggleFace = this.toggleFace.bind(this);
   }
 
-  toggleFace = () => {
-    var face;
-    if(this.state.face == 0){
-      face = 1;
-    }
-    else{
-      face = 0;
-    }
-    this.setState({face: face});
+  componentDidMount(){
+    Faces.forEach((face) => {
+      this.sfRef.addAugmentedFace({model: face.model, texture: face.texture})
+      .then((index) => {
+        const faces = [...this.state.faces, {title: face.title, id: index}];
+        this.setState({faces: faces});
+      })
+    })
   }
 
   render(){
@@ -30,12 +34,22 @@ export default class App extends Component {
           setAugmentedFace={this.state.face}
           ref={(c) => this.sfRef = c}
           style={styles.box}
-          viewMode={true}
           />
         <View style={{width: '100%', height: 100, position: 'absolute', bottom: 0, left: 0, alignItems: 'center', justifyContent: 'center'}}>
-          <View style={{width: 150}}>
-            <Button title="Toggle face model" onPress={this.toggleFace}/>
-          </View>
+          <FlatList
+            style={{width: '100%', height: 60}}
+            horizontal={true}
+            data={this.state.faces}
+            renderItem={({item}) => {
+              return(
+                <TouchableOpacity key={item.id} style={{width: 60, height: 60, padding: 5}} onPress={() => {this.setState({face: item.id})}}>
+                  <View style={{width: '100%', height: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{textAlign: 'center'}}>{item.title}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
         </View>
       </View>
     );

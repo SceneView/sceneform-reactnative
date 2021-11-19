@@ -9,6 +9,10 @@ class AugmentedFacesView extends React.Component {
         this.NativeArView = undefined;
         this.onChange = this.onChange.bind(this);
         this.subscriptions = [];
+        this.mounted = false;
+        this.state = {
+
+        }
     }
 
     onChange(event) {
@@ -16,12 +20,24 @@ class AugmentedFacesView extends React.Component {
     }
 
     componentDidMount() {
-
+        this.mounted = true;
     }
 
     componentWillUnmount() {
         this.subscriptions.forEach(sub => sub.remove());
         this.subscriptions = [];
+        this.mounted = false;
+    }
+
+    addAugmentedFace = ({model, texture}) => {
+        const mModel = model;
+        if(!model){
+            throw 'At least a model source is required';
+        }
+        const mTexture = texture || '';
+        // returns an index;
+        console.log("Adding object to scene", model, texture)
+        return NativeModules.SceneformAugmentedFacesModule.addFaceModel(findNodeHandle(this), mModel, mTexture);
     }
 
     render() {
