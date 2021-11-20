@@ -128,23 +128,7 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
   }
 
   private void setOcclusionEnabled(boolean enabled){
-    /*
-    Session session = arFragment.getArSceneView().getSession();
-    if(session == null){
-      return;
-    }
-    //Log.i("Occlusion", "Toggle occlusion to: " + enabled);
-    Config config = arFragment.getArSceneView().getSessionConfig();
-    if(enabled){
-      if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-        arFragment.getArSceneView().getCameraStream().setDepthOcclusionMode(CameraStream.DepthOcclusionMode.DEPTH_OCCLUSION_ENABLED);
-      }
-    }
-    else{
-      arFragment.getArSceneView().getCameraStream().setDepthOcclusionMode(CameraStream.DepthOcclusionMode.DEPTH_OCCLUSION_DISABLED);
-    }
-    arFragment.getArSceneView().setSessionConfig(config, true);
-     */
+    // TODO
   }
 
   public void onSessionConfiguration(Session session, Config config) {
@@ -153,10 +137,6 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
     }
     config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
     config.setCloudAnchorMode(Config.CloudAnchorMode.ENABLED);
-    //if(viewMode != HostResolveMode.HOSTING) {
-    //  config.setPlaneFindingMode(Config.PlaneFindingMode.DISABLED);
-    //}
-    //setOcclusionEnabled(true);
   }
 
   public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
@@ -184,7 +164,6 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
         Anchor anchor = Objects.requireNonNull(arFragment.getArSceneView().getSession()).resolveCloudAnchor(anchorId);
         Log.i("Resolved anchor: ", anchor.getCloudAnchorId());
         Model model = new Model(this);
-        //model.mAnchorId = anchorId;
         model.setSource(name);
         model.fetchModel();
         model.setAnchor(anchor);
@@ -204,7 +183,6 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
         Log.i("TapPlane", "Plane tapped and putting model!");
         Anchor anchor = mAnchors.get(Integer.parseInt(anchorId));
         Model model = new Model(this);
-        //model.mAnchorId = anchorId;
         model.setSource(name);
         model.fetchModel();
         model.setAnchor(anchor);
@@ -310,7 +288,6 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
       if(locationScene != null){
         locationScene.clearMarkers();
       }
-      //mLocationMarkers.clear();
       setOcclusionEnabled(true);
     }
     else{
@@ -370,6 +347,9 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
       if(frame == null){
         return;
       }
+      for(Model model : mChildren){
+        model.onUpdate(frameTime);
+      }
       com.google.ar.core.Camera camera = frame.getCamera();
       if(camera.getTrackingState() == TrackingState.TRACKING && viewMode == HostResolveMode.HOSTING) {
         Session.FeatureMapQuality featureMapQuality = Objects.requireNonNull(arFragment.getArSceneView().getSession()).estimateFeatureMapQualityForHosting(frame.getCamera().getPose());
@@ -418,40 +398,6 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
     catch(Exception e){
       Log.e("onUpdateListener", e.toString());
     }
-/*
-    try{
-      if(mResolvingAnchors.size() > 0){
-        List<Anchor> anchorsReady = new ArrayList<>();
-        for(Anchor anchor : mResolvingAnchors){
-          Anchor.CloudAnchorState anchorState = anchor.getCloudAnchorState();
-          if(anchorState.isError()){
-            Log.e("AnchorState", anchorState.toString());
-          }
-          else if(anchorState == Anchor.CloudAnchorState.SUCCESS){
-            anchorsReady.add(anchor);
-          }
-        }
-        for(Anchor anchor : anchorsReady){
-          mResolvingAnchors.remove(anchor);
-          mAnchors.add(anchor);
-          int index = mAnchors.indexOf(anchor);
-          WritableMap event = Arguments.createMap();
-          event.putBoolean("onAnchorResolve", true);
-          event.putString("cloudAnchorId",    anchor.getCloudAnchorId());
-          event.putInt("anchorId",            index);
-          event.putString("pose",             anchor.getPose().toString());
-          event.putString("trackingState",    anchor.getTrackingState().toString());
-          event.putString("cloudState",       anchor.getCloudAnchorState().toString());
-          event.putInt("HashCode",            anchor.hashCode());
-          ModuleWithEmitter.sendEvent(context, ModuleWithEmitter.ON_ANCHOR_RESOLVE, event);
-        }
-      }
-    }
-    catch(Exception exception){
-      Log.e("onUpdateListener", exception.toString());
-    }
-
- */
   }
 
   public void killProcess() {
