@@ -399,46 +399,7 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
       Log.e("onUpdateListener", e.toString());
     }
   }
-
-  public void killProcess() {
-    try {
-      Log.e("REMOVE_KILL", "RUN START");
-      ((AppCompatActivity) Objects.requireNonNull(context.getCurrentActivity())).getSupportFragmentManager().beginTransaction().remove(arFragment).commitAllowingStateLoss();
-      Thread threadPause = new Thread() {
-        @Override
-        public void run() {
-          try {
-            sleep(100);
-            Objects.requireNonNull(arFragment.getArSceneView().getSession()).pause();
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
-      };
-      Thread thread = new Thread() {
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void run() {
-          try {
-            threadPause.start();
-            sleep(100);
-            Objects.requireNonNull(arFragment.getArSceneView().getSession()).close();
-            ((AppCompatActivity) context.getCurrentActivity()).finish();
-          } catch (Throwable e) {
-            e.printStackTrace();
-          } finally {
-            System.gc();
-            Log.e("REMOVE_KILL", "END START");
-          }
-        }
-      };
-      thread.start();
-    } catch (Exception e) {
-      System.out.println(e.toString());
-    }
-
-  }
-
+  
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
