@@ -399,7 +399,7 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
       Log.e("onUpdateListener", e.toString());
     }
   }
-  
+
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();

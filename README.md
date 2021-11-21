@@ -31,12 +31,12 @@ Also, this package does not handle permissions, be sure to request:
 
 # Installation
 
-Install from npm running `npm install --save @sceneview/react-native-sceneform`
-Then, add the following to your AndroidManifest.xml inside the Application node.
-
+- Install from npm running `npm install --save @sceneview/react-native-sceneform`
+- Add the following to your AndroidManifest.xml inside the Application node.
 ```xml
 <meta-data  android:name="com.google.ar.core"  android:value="required"  />
 ```
+- In your app/build.gradle, set your minSdkVersion to 24.
 
 If you are going to use Cloud Anchors, be sure to add your API Key to the AndroidManifest or to sign your application in the Google Cloud Platform console (keyless auth)
 
@@ -65,4 +65,4 @@ If you are going to use Cloud Anchors, be sure to add your API Key to the Androi
 
 # Credits
 
-![ARCore-Location](https://github.com/appoly/ARCore-Location)
+[ARCore-Location](https://github.com/appoly/ARCore-Location)
