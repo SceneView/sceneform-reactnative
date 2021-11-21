@@ -1,45 +1,27 @@
-import React, { Component } from 'react';
+import React, { useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { SceneformView } from '../../src';
 
-import { StyleSheet, View, Button, FlatList, TouchableOpacity, Text } from 'react-native';
-import { SceneformView, AugmentedFacesView } from '../../src';
+const App = () => {
+  const sceneformView = useRef(null);
 
-export default class App extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-
-    }
-  }
-
-  componentDidMount(){
-
-  }
-
-  render(){
-    return (
-      <View style={styles.container}>
-        <SceneformView
-          ref={(c) => this.sceneformview = c}
-          style={styles.box}
-          onTapPlane={(event) => {
-            this.sceneformview.addObject({name: "models/Rabbit.glb", anchorId: event.planeId, isCloudAnchor: false});
-          }}
-          />
-      </View>
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <SceneformView
+        ref={sceneformView}
+        style={styles.container}
+        onTapPlane={(event) => {
+          sceneformView.current.addObject({name: "models/Rabbit.glb", anchorId: event.planeId, isCloudAnchor: false});
+        }}
+        />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: "100%",
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: "100%",
-    height: "100%",
-    marginVertical: 20,
-  },
+    flex: 1
+  }
 });
+
+export default App;
