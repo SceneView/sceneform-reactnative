@@ -12,26 +12,18 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      face:   -1,
-      faces:  []
+
     }
   }
 
   componentDidMount(){
-    Faces.forEach((face) => {
-      this.sfRef.addAugmentedFace({model: face.model, texture: face.texture})
-      .then((index) => {
-        const faces = [...this.state.faces, {title: face.title, id: index}];
-        this.setState({faces: faces});
-      })
-    })
+
   }
 
   render(){
     return (
       <View style={styles.container}>
-        <AugmentedFacesView
-          setAugmentedFace={this.state.face}
+        <SceneformView
           ref={(c) => this.sfRef = c}
           style={styles.box}
           />
