@@ -14,3 +14,5 @@ It also supports the following methods:
 | name | params | return |
 | :------------ | :------------ | :------------ |
 | addAugmentedFace | `AugmentedFaceModel` | `Promise` returning an `index` to be used by the `setAugmentedFace` prop |
+
+[Example](https://github.com/doranteseduardo/augmented-faces-demo)

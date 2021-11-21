@@ -52,7 +52,7 @@ When `takeScreenshot` is called, the session's current view is copied into a bit
 
 The `addObject` method is used to insert a renderable into scene, it supports a `Model` object described as follows:
 
-##### model
+##### name
 
 It must be an URL pointing to a glb asset.
 

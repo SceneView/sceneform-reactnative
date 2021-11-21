@@ -31,3 +31,14 @@ The following events are supported:
 | onAnchorResolve | Triggered when a cloud anchor has been resolved | `CloudAnchor` |
 | onAnchorHost | Triggered when a cloud anchor has been hosted correctly | `CloudAnchor` |
 | onFeatureMapQualityChange | Triggered when the feature map quality changes (HOSTING ONLY) | `FeatureMapQuality` |
+
+Example
+```js
+<SceneformView
+    ref={(c) => this.sceneformview = c}
+    style={{width: '100%', height: '100%'}}
+    onTapPlane={(event) => {
+        this.sceneformview.addObject({name: "models/Rabbit.glb", anchorId: event.planeId, isCloudAnchor: false});
+    }}
+/>
+```
