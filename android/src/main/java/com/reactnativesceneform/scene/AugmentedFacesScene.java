@@ -4,6 +4,7 @@ import static com.reactnativesceneform.utils.HelperFuncions.checkIsSupportedDevi
 import static com.reactnativesceneform.utils.HelperFuncions.saveBitmapToDisk;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.media.CamcorderProfile;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -27,6 +28,7 @@ import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.ArFrontFacingFragment;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 import com.reactnativesceneform.R;
+import com.reactnativesceneform.utils.VideoRecorder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +47,9 @@ public class AugmentedFacesScene extends FrameLayout {
   private final Set<CompletableFuture<?>> loaders = new HashSet<>();
   private Texture faceTexture;
   private ModelRenderable faceModel;
+  private boolean initialised = false;
+  private boolean mIsRecording = false;
+  private VideoRecorder mVideoRecorder;
 
   private final HashMap<AugmentedFace, AugmentedFaceNode> facesNodes = new HashMap<>();
   public final List<FaceModel> mFaces = new ArrayList<FaceModel>();
@@ -52,7 +57,9 @@ public class AugmentedFacesScene extends FrameLayout {
   public AugmentedFacesScene(ThemedReactContext context) {
     super(context);
     this.context = context;
-    init();
+    if(!initialised) {
+      init();
+    }
   }
 
   public void init() {
@@ -65,6 +72,11 @@ public class AugmentedFacesScene extends FrameLayout {
     arFragment.getArSceneView().setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST);
     arFragment.setOnAugmentedFaceUpdateListener(this::onAugmentedFaceTrackingUpdate);
     arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateListener);
+    mVideoRecorder = new VideoRecorder();
+    mVideoRecorder.setSceneView(arFragment.getArSceneView());
+    int orientation = getResources().getConfiguration().orientation;
+    mVideoRecorder.setVideoQuality(CamcorderProfile.QUALITY_480P, orientation);
+    initialised = true;
   }
 
   private void onUpdateListener(FrameTime frameTime) {
@@ -187,4 +199,30 @@ public class AugmentedFacesScene extends FrameLayout {
     };
     thread.start();
   }
+
+  public void startVideoRecording(Promise promise) {
+    if(arFragment != null && arFragment.getArSceneView().getSession() != null && !mIsRecording){
+      mIsRecording =  mVideoRecorder.onToggleRecord();
+      WritableMap event = Arguments.createMap();
+      if(mIsRecording){
+        event.putBoolean("recording", true);
+        promise.resolve(event);
+      }
+      else{
+        promise.reject("recording", "false");
+      }
+    }
+  }
+
+  public void stopVideoRecording(Promise promise) {
+    if(arFragment != null && arFragment.getArSceneView().getSession() != null && mIsRecording){
+      mIsRecording = mVideoRecorder.onToggleRecord();
+      String videoPath = mVideoRecorder.getVideoPath().getAbsolutePath();
+
+      WritableMap event = Arguments.createMap();
+      event.putString("path", videoPath);
+      promise.resolve(event);
+    }
+  }
+
 }

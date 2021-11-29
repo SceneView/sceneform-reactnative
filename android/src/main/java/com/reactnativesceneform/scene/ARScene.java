@@ -72,6 +72,7 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
   private ReadableArray mLocationMarkersData;
   private List<Anchor> mResolvingAnchors = new ArrayList<>();
   private final List<CompletableFuture<Void>> futures = new ArrayList<>();
+  private boolean initialised = false;
 
   private enum HostResolveMode {
     NONE,
@@ -84,7 +85,9 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
     super(context);
     this.context = context;
     mModelManager = new ModelManager(this);
-    init();
+    if(!initialised) {
+      init();
+    }
   }
 
   @SuppressLint("ShowToast")
@@ -116,15 +119,9 @@ public class ARScene extends FrameLayout implements BaseArFragment.OnTapArPlaneL
     mVideoRecorder = new VideoRecorder();
     mVideoRecorder.setSceneView(arFragment.getArSceneView());
     int orientation = getResources().getConfiguration().orientation;
-    mVideoRecorder.setVideoQuality(CamcorderProfile.QUALITY_720P, orientation);
+    mVideoRecorder.setVideoQuality(CamcorderProfile.QUALITY_480P, orientation);
 
-    Renderer renderer = arFragment.getArSceneView().getRenderer();
-    assert renderer != null;
-    renderer.getFilamentView().setColorGrading(
-      new ColorGrading.Builder()
-      .toneMapping(ColorGrading.ToneMapping.FILMIC)
-      .build(EngineInstance.getEngine().getFilamentEngine())
-    );
+    initialised = true;
   }
 
   private void setOcclusionEnabled(boolean enabled){

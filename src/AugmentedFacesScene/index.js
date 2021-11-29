@@ -11,7 +11,7 @@ class AugmentedFacesView extends React.Component {
         this.subscriptions = [];
         this.mounted = false;
         this.state = {
-
+            recording: false
         }
     }
 
@@ -38,6 +38,32 @@ class AugmentedFacesView extends React.Component {
         // returns an index;
         console.log("Adding object to scene", model, texture)
         return NativeModules.SceneformAugmentedFacesModule.addFaceModel(findNodeHandle(this), mModel, mTexture);
+    }
+
+    takeScreenshot = () => {
+        return NativeModules.SceneformAugmentedFacesModule.takeSnapshot(findNodeHandle(this));
+    }
+
+    startVideoRecording = async () => {
+        if(this.state.recording){
+            throw 'Video is already recording';
+        }
+        const recording = await NativeModules.SceneformAugmentedFacesModule.startVideoRecording(findNodeHandle(this));
+        if(recording){
+            this.setState({recording: true}, () => {
+                return true;
+            });
+        }
+        else{
+            return false;
+        }
+    }
+
+    stopVideoRecording = () => {
+        if(!this.state.recording){
+            throw 'Video is not recording';
+        }
+        return NativeModules.SceneformAugmentedFacesModule.stopVideoRecording(findNodeHandle(this));
     }
 
     render() {

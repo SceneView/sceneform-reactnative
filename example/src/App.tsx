@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { SceneformView } from '../../src';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { SceneformView, ModelViewer, AugmentedFacesView } from '../../src';
 
 const App = () => {
   const sceneformView = useRef(null);

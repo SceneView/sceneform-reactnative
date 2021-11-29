@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 public class VideoRecorder {
   private static final String TAG = "VideoRecorder";
-  private static final int DEFAULT_BITRATE = 10000000;
+  private static final int DEFAULT_BITRATE = 1000000;
   private static final int DEFAULT_FRAMERATE = 30;
 
   // recordingVideoFlag is true when the media recorder is capturing video.
