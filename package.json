@@ -1,6 +1,6 @@
 {
   "name": "@sceneview/react-native-sceneform",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Sceneform for React Native",
   "main": "lib\\commonjs\\index.js",
   "module": "lib\\module\\index.js",

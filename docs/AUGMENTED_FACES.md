@@ -14,5 +14,8 @@ It also supports the following methods:
 | name | params | return |
 | :------------ | :------------ | :------------ |
 | addAugmentedFace | `AugmentedFaceModel` | `Promise` returning an `index` to be used by the `setAugmentedFace` prop |
+| takeScreenshot | | `Screenshot` promise |
+| startVideoRecording | | boolean promise |
+| stopVideoRecording | | `VideoRecording` promise |
 
 [Example](https://github.com/doranteseduardo/augmented-faces-demo)
