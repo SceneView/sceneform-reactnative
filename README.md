@@ -1,3 +1,6 @@
+### Discord Server
+Join us on [Discord](https://discord.gg/UbNDDBTNqb) if you need a hand or just want to talk about Sceneform and AR.
+
 ### Features
 
 - Remote and local assets
